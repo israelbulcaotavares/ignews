@@ -19,7 +19,7 @@ export default NextAuth({
     // ...add more providers here
   ],
 
-  
+
 
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -27,17 +27,33 @@ export default NextAuth({
 
       try {
         await fauna.query(
-          q.Create(
-            q.Collection('users'),
-            { data: { email } }
+          q.If( // se  
+            q.Not( // nao  
+              q.Exists( // se existe o usiario
+                q.Match( // no qual realiza um match
+                  q.Index('user_by_email'),
+                  q.Casefold(user.email)
+                )
+              )
+            ),
+            q.Create(
+              q.Collection('users'),
+              {data: {email }}
+            ),
+            q.Get(
+              q.Match( // no qual realiza um match
+                  q.Index('user_by_email'),
+                  q.Casefold(user.email)
+                )
+            )
           )
         )
         return true
-      }catch{
+      } catch {
         return false
       }
 
-     
+
     },
   }
 })
