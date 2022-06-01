@@ -16,3 +16,11 @@ export default NextAuth({
     // ...add more providers here
   ],
 })
+
+//FaunaDB - HTTP
+
+//PostgreeSQL, MongoDB
+
+// 24h (1 conexão)
+
+//1000
